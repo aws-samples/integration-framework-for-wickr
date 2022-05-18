@@ -215,6 +215,7 @@ samconfig.toml*
 !.vscode/extensions.json
 .history
 .vscode
+api-library.code-workspace
 
 ### Windows ###
 # Windows thumbnail cache files
