@@ -1,0 +1,124 @@
+{
+    "version": "0",
+    "id": "fadc518f-c9f4-b3ff-3a30-f870391c8e29",
+    "detail-type": "GuardDuty Finding",
+    "source": "aws.guardduty",
+    "account": "123456789112",
+    "time": "2021-12-17T12:35:03Z",
+    "region": "eu-west-1",
+    "resources": [],
+    "detail": {
+        "schemaVersion": "2.0",
+        "accountId": "123456789112",
+        "region": "eu-west-1",
+        "partition": "aws",
+        "id": "38bee42fa81065ea73436227bd1137e1",
+        "arn": "arn:aws:guardduty:eu-west-1:123456789112:detector/3ebc139cfd8bf3f19f032be437c018d1/finding/38bee42fa81065ea73436227bd1137e1",
+        "type": "Backdoor:EC2/C&CActivity.B!DNS",
+        "resource": {
+            "resourceType": "Instance",
+            "instanceDetails": {
+                "instanceId": "i-02163aba50a35e73b",
+                "instanceType": "t3a.small",
+                "launchTime": "2021-12-17T11:56:44.000Z",
+                "platform": null,
+                "productCodes": [],
+                "iamInstanceProfile": {
+                    "arn": "arn:aws:iam::123456789112:instance-profile/web_profile",
+                    "id": "AIPAU5GNKJ4W7CHXD2MGG"
+                },
+                "networkInterfaces": [
+                    {
+                        "ipv6Addresses": [],
+                        "networkInterfaceId": "eni-0e46a845074825e64",
+                        "privateDnsName": "ip-12-0-1-12.eu-west-1.compute.internal",
+                        "privateIpAddress": "12.0.1.12",
+                        "privateIpAddresses": [
+                            {
+                                "privateDnsName": "ip-12-0-1-12.eu-west-1.compute.internal",
+                                "privateIpAddress": "12.0.1.12"
+                            }
+                        ],
+                        "subnetId": "subnet-0111ce7f224dde94d",
+                        "vpcId": "vpc-0a16fc4c36ec1d760",
+                        "securityGroups": [
+                            {
+                                "groupName": "sg_linux_management",
+                                "groupId": "sg-0e8c86b580704b616"
+                            },
+                            {
+                                "groupName": "sg_web_",
+                                "groupId": "sg-07e7d9a6a6e153a93"
+                            }
+                        ],
+                        "publicDnsName": "ec2-54-170-54-46.eu-west-1.compute.amazonaws.com",
+                        "publicIp": "54.170.54.46"
+                    }
+                ],
+                "outpostArn": null,
+                "tags": [
+                    {
+                        "key": "Stage",
+                        "value": "Development"
+                    },
+                    {
+                        "key": "auto-delete",
+                        "value": "never"
+                    },
+                    {
+                        "key": "Project",
+                        "value": "A"
+                    },
+                    {
+                        "key": "Name",
+                        "value": "IFAPP04"
+                    },
+                    {
+                        "key": "Terraform",
+                        "value": "true"
+                    }
+                ],
+                "instanceState": "running",
+                "availabilityZone": "eu-west-1a",
+                "imageId": "ami-01720b5f421cf0179",
+                "imageDescription": "Amazon Linux 2 AMI 2.0.20201218.1 x86_64 HVM gp2"
+            }
+        },
+        "service": {
+            "serviceName": "guardduty",
+            "detectorId": "3ebc139cfd8bf3f19f032be437c018d1",
+            "action": {
+                "actionType": "DNS_REQUEST",
+                "dnsRequestAction": {
+                    "domain": "guarddutyc2activityb.com",
+                    "protocol": "UDP",
+                    "blocked": false
+                }
+            },
+            "resourceRole": "TARGET",
+            "additionalInfo": {
+                "threatListName": "TestDomain"
+            },
+            "evidence": {
+                "threatIntelligenceDetails": [
+                    {
+                        "threatListName": "TestDomain",
+                        "threatNames": []
+                    }
+                ]
+            },
+            "eventFirstSeen": "2021-12-17T11:57:37.000Z",
+            "eventLastSeen": "2021-12-17T11:57:37.000Z",
+            "archived": false,
+            "count": 1
+        },
+        "severity": 8,
+        "createdAt": "2021-12-17T12:30:29.408Z",
+        "updatedAt": "2021-12-17T12:30:29.408Z",
+        "findingTypeVersion": {
+            "present": false
+        },
+        "title": "Command and Control server domain name queried by EC2 instance i-02163aba50a35e73b.",
+        "description": "EC2 instance i-02163aba50a35e73b is querying a domain name associated with a known Command & Control server."
+    }
+}

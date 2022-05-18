@@ -1,0 +1,28 @@
+{
+    "location":{
+       "latitude":51.3797168,
+       "longitude":-0.0074526
+    },
+    "message_id":"29475840a4ff11ecb2f2a3b418d3d4e0",
+    "msg_ts":"1647417635.780691",
+    "msgtype":8000,
+    "respond_api":"http:///0/Apps//Messages",
+    "sender":"nikki.wolf@example.com",
+    "time":"3/16/22 8:00 AM",
+    "ttl":"4/15/22 8:17 AM",
+    "users":[
+       {
+          "name":"bob"
+       },
+       {
+          "name":"john"
+       },
+       {
+          "name":"bob@somewhere.com"
+       },
+       {
+          "name":"webbot"
+       }
+    ],
+    "vgroupid":"S6911c9799ffa065b774cc1cd71c239z42f65a5ca7a9544389f40c3fe8a43d44"
+ }

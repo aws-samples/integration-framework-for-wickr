@@ -1,0 +1,310 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  AWS Wickr Integration Framework (AWIF)
+
+Parameters:
+  WickrUrl:
+    Type: String
+    Default: ""
+  WickrApiKey:
+    Type: String
+    Default: ""
+  WickrApiToken:
+    Type: String
+    Default: ""
+  WickrVerifyCert:
+    Type: String
+    Default: "True"
+    AllowedValues:
+      - "True"
+      - "False"    
+  WickrLocatorRoomName:
+    Type: String
+    Default: "TAK Locator"
+  WickrPIIRoomName:
+    Type: String
+    Default: "PII Detector"
+  WickrChatBotRoomName:
+    Type: String
+    Default: "Chat Bot"
+  VPCId:
+    Type: AWS::EC2::VPC::Id
+  SubnetIds:
+    Type: CommaDelimitedList
+
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Runtime: python3.9
+    Timeout: 6
+    Environment:
+      Variables:
+        ApiUrl: !Ref WickrUrl
+        ApiKey: !Ref WickrApiKey
+        ApiToken: !Ref WickrApiToken
+        VerifyCert : !Ref WickrVerifyCert
+
+Resources:
+  LambdaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPCId
+      GroupDescription: Allow access from Lambda to the Wickr API
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3001
+          ToPort: 3010
+          CidrIp: 0.0.0.0/0
+
+  APILayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - python3.9
+      ContentUri: functions/api
+      RetentionPolicy: Delete
+
+  WickrIRIntegrationExample:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/ir_integration_example
+      Handler: app.lambda_handler
+      Timeout: 10
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref APILayer
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - ssm-incidents:GetResourcePolicies
+                - ssm-incidents:GetIncidentRecord
+                - ssm-incidents:GetResponsePlan
+                - ssm-incidents:ListTagsForResource
+                - ssm-incidents:ListRelatedItems
+                - ssm-incidents:StartIncident
+                - ssm-incidents:GetTimelineEvent
+                - ssm:UpdateOpsItem
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Join [ "", [ !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/AWIF/*" ] ]
+  WickrMessageAdapter:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/message_adapter
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      FunctionUrlConfig:
+        AuthType: NONE      
+      Timeout: 10
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref APILayer
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AWSLambdaVPCAccessExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Join [ "", [ !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/AWIF/*" ] ]
+            - Effect: Allow
+              Action:
+                - comprehend:DetectPiiEntities
+              Resource: '*'
+      Events:
+        APIRoot:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+            RestApiId: !Ref MessageAdapterPrivateApi
+      Environment:
+        Variables:
+          wickr_location_room_name: !Ref WickrLocatorRoomName
+          wickr_pii_room_name: !Ref WickrPIIRoomName
+  WickrRoomBlaster:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: functions/room_blaster
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          !Split [',', !Join [',', !Ref SubnetIds]]
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref APILayer
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Join [ "", [ !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/AWIF/*" ] ]      
+      Events:
+        RoomBlaster:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /room_blaster
+            Method: post
+  WickrChatBot:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: functions/chat_bot
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          !Ref SubnetIds
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref APILayer
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Join [ "", [ !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/AWIF/*" ] ]            
+      Environment:
+        Variables:
+          ChatBotRoomName: !Ref 'WickrChatBotRoomName'
+      Events:
+        SNSChatBot:
+          Type: SNS
+          Properties:
+            Topic: !Ref WickrChatTopic
+  
+  PIIDetector:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: functions/pii_detector
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Timeout: 7
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref APILayer
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - comprehend:DetectPiiEntities
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Join [ "", [ !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/AWIF/*" ] ]                  
+      Environment:
+        Variables:
+          RoomName: !Ref WickrPIIRoomName
+  
+  WickrChatTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: 'Wickr-Chat-Bot'
+
+  MessageAdapterPrivateApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      MethodSettings:
+        - HttpMethod: POST
+          ResourcePath: /
+      EndpointConfiguration: PRIVATE
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          title: MessageAdapter
+        basePath: /Prod
+        schemes:
+          - https
+        x-amazon-apigateway-policy:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal: "*"
+              Action:
+                - "execute-api:Invoke"
+              Resource: "execute-api:/*"
+              # Condition:
+              #   StringEquals:
+              #     aws:sourceVpce: !Ref APIEndPointId
+        paths:
+          /:
+            x-amazon-apigateway-any-method:
+              produces:
+              - application/json
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: 200
+                uri: !Join [ "", [ !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:", !Ref WickrMessageAdapter, "/invocations"] ]
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: AWS_PROXY
+  WickrSSMAproveDoc: 
+    Type: AWS::SSM::Document
+    Properties:
+      DocumentType: Automation
+      Content:
+        schemaVersion: '0.3'
+        description: 'Wickr room broadcaster with approval step.'
+        parameters:
+          message:
+            type: String
+            description: "(Required) Message to broadcast"
+            default: ''
+        mainSteps:
+          - name: approve
+            action: aws:approve
+            description: 'Squadron Leader Approval - Broadcast code red alert to all rooms.'
+            timeoutSeconds: 1000
+            onFailure: Abort
+            inputs:
+              Message: "{{ message }}"
+              MinRequiredApprovals: 1
+              Approvers:
+              - arn:aws:iam::${AWS::AccountId}:role/Admin23
+            nextStep: InvokeRoomBroadcaster
+          - name: InvokeRoomBroadcaster
+            action: aws:invokeLambdaFunction
+            maxAttempts: 3
+            timeoutSeconds: 120
+            onFailure: Abort
+            inputs:
+              FunctionName: !Ref WickrRoomBlaster
+              Payload: '{}'
+
+
+Outputs:
+  # WickrMessageAdapter:
+  #   Description: "Function URL for location messagers"
+  #   Value: 
+  #     Fn::GetAtt: WickrMessageAdapter.FunctionUrl
+
+  AdapaterGatewayApi:
+    Description: "Private API Gateway endpoint URL for the message adapter"
+    Value: !Sub "https://${MessageAdapterPrivateApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
