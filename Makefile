@@ -27,6 +27,14 @@ deploy/guided: dependencies ## Guided deployment
 	--parameter-overrides ParameterKey=WickrUrl,ParameterValue=$(WickrAPIUrl) ParameterKey=WickrApiKey,ParameterValue=$(WickrApiKey) \
 	--guided
 
+deploy/custom: dependencies ## Deploy the SAM app with custom params
+	sam deploy \
+	--template-file template.yaml \
+	--stack-name AWIF \
+	--capabilities CAPABILITY_IAM \
+	--s3-bucket bucket-name \
+	--parameter-overrides ParameterKey=WickrUrl,ParameterValue=$(WickrAPIUrl) ParameterKey=WickrApiKey,ParameterValue=$(WickrApiKey)
+
 delete: ## Delete application
 	sam delete
 
