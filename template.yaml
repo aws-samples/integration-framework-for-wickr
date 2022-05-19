@@ -51,11 +51,15 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref VPCId
-      GroupDescription: Allow access from Lambda to the Wickr API
+      GroupDescription: Allow access for Wickr event callbacks
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 3001
           ToPort: 3010
++          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
           CidrIp: 0.0.0.0/0
 
   APILayer:
@@ -382,6 +386,6 @@ Outputs:
     Description: "The HTTP URL endpoint for the message adapter"
     Value: !GetAtt WickrMessageAdapterUrl.FunctionUrl
 
-  AdapaterGatewayApi:
-    Description: "Private API Gateway endpoint URL for the message adapter"
-    Value: !Sub "https://${MessageAdapterPrivateApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  # AdapaterGatewayApi:
+  #   Description: "Private API Gateway endpoint URL for the message adapter"
+  #   Value: !Sub "https://${MessageAdapterPrivateApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
