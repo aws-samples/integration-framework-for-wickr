@@ -11,12 +11,7 @@ debug/incident: ## Run the Lambda IR function
 	@sam local invoke APIExample -e events/command_control_finding_from_guard_duty.json --parameter-overrides WickrUrl="$(WickrAPIUrl)" WickrApiKey=$(WickrApiKey)
 
 deploy: dependencies ## Deploy the SAM app
-	sam deploy \
-	--template-file template.yaml \
-	--stack-name AWIF \
-	--capabilities CAPABILITY_IAM \
-	--s3-bucket dangibbo-noct-sec-terraform \
-	--parameter-overrides ParameterKey=WickrUrl,ParameterValue=$(WickrAPIUrl) ParameterKey=WickrApiKey,ParameterValue=$(WickrApiKey)
+	sam deploy 
 
 deploy/guided: dependencies ## Guided deployment
 	sam deploy \

@@ -23,31 +23,33 @@ def lambda_handler(event, context):
     logger.info('Incoming event payload:')
     logger.info(json.dumps(event))
 
-    wickr_api = WickrAPILibrary()
-    
-    # Determine if event came from an API Gateway - it will have a body element if so
+    # Determine if event came from an API Gateway or Lambda Function URL- it will have a body element if so
     incoming_event = event
     if "body" in event:
-        logger.info('Using API Gateway payload:')
+        logger.info('Using API Gateway Or Lambda Function URL payload')
         incoming_event = json.loads(event['body'])
 
-    message_type_id = incoming_event['msgtype']
-    if message_type_id == MESSAGE_TYPE_LOCATION:
-        wickr_message = WickrLocationMessage(incoming_event)
-        logger.info(wickr_message.message_type_id)
-        logger.info(wickr_message.location_latitude)
-        logger.info(wickr_message.location_longitude)
-
-        location_room_id = wickr_api.get_room_by_name(wickr_location_room_name)
-        wickr_api.send_message_to_room(location_room_id, json.dumps(incoming_event))
-    elif message_type_id == MESSAGE_TYPE_TEXT:
-        logger.info('Message sent...looking for PII info')
-        message_text = incoming_event['message']
-        
-        pii_room_id = wickr_api.get_room_by_name(wickr_pii_room_name)
-        wickr_api.detect_pii(message_text,pii_room_id)
-    elif message_type_id == MESSAGE_TYPE_FILE_TRANSFER:
-        logger.info('File sent detected')
-        logger.info(json.dumps(incoming_event))
+    if "msgtype" in incoming_event:
+        message_type_id = incoming_event['msgtype']
+        if message_type_id == MESSAGE_TYPE_LOCATION:
+            wickr_api = WickrAPILibrary()
+            wickr_message = WickrLocationMessage(incoming_event)
+            logger.info(wickr_message.message_type_id)
+            logger.info(wickr_message.location_latitude)
+            logger.info(wickr_message.location_longitude)
+    
+            location_room_id = wickr_api.get_room_by_name(wickr_location_room_name)
+            wickr_api.send_message_to_room(location_room_id, json.dumps(incoming_event))
+        elif message_type_id == MESSAGE_TYPE_TEXT:
+            #wickr_api = WickrAPILibrary()
+            logger.info('Room Message received...')
+            #message_text = incoming_event['message']
+            #pii_room_id = wickr_api.get_room_by_name(wickr_pii_room_name)
+            #wickr_api.detect_pii(message_text,pii_room_id)
+        elif message_type_id == MESSAGE_TYPE_FILE_TRANSFER:
+            logger.info('File sent detected')
+            logger.info(json.dumps(incoming_event))
+    else:
+        logger.info('Unknown payload.')
 
     return {}

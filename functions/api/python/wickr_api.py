@@ -88,6 +88,8 @@ class WickrAPILibrary:
                             headers=self.wickr_url_params,
                             verify=self.verify_cert,
                             data=json.dumps(data))
+      
+      self._LOGGER.info(f'Response code: {response.status_code}')
       if response.status_code in[400, 401]:
         self._LOGGER.error(response.text)
         raise ValueError(response.text)
@@ -157,6 +159,9 @@ class WickrAPILibrary:
       except Exception as e:
         self._LOGGER.error(e)
 
+      if not room_id:
+        self._LOGGER.error(f'Room {room_name} not found.')
+      
       return room_id
 
   def room_blaster(self, message, burn_on_read_seconds=0,):
@@ -167,12 +172,14 @@ class WickrAPILibrary:
           self._LOGGER.info(f'Room blaster sent to room:{vgroupid}')
 
   def detect_pii(self, message, room_id):
+      self._LOGGER.info('Start PII detection')
       client = boto3.client('comprehend') 
       response = client.detect_pii_entities(
             Text= message,
             LanguageCode='en')
-            
+
       if len(response['Entities']) >0:
+        self._LOGGER.info(f'Found PII...Reporting to room: ({room_id})')
         self.send_message_to_room(room_id, json.dumps(response))
 
       return response

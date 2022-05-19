@@ -54,10 +54,6 @@ Resources:
       GroupDescription: Allow access for Wickr event callbacks
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 3001
-          ToPort: 3010
-+          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
           CidrIp: 0.0.0.0/0
