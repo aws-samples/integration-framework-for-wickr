@@ -40,6 +40,6 @@
        "domainName":"testPrefix.testDomainName",
        "apiId":"01s9t0pff8"
     },
-    "body":"{\n    \"location\":{\n       \"latitude\":51.3797168,\n       \"longitude\":-0.0074526\n    },\n    \"message_id\":\"29475840a4ff11ecb2f2a3b418d3d4e0\",\n    \"msg_ts\":\"1647417635.780691\",\n    \"msgtype\":8000,\n    \"respond_api\":\"http:///0/Apps//Messages\",\n    \"sender\":\"bob@somewhere.com\",\n    \"time\":\"3/16/22 8:00 AM\",\n    \"ttl\":\"4/15/22 8:17 AM\",\n    \"users\":[\n       {\n          \"name\":\"bob\"\n       },\n       {\n          \"name\":\"dangibbo\"\n       },\n       {\n          \"name\":\"bob@somewhere.com.com\"\n       },\n       {\n          \"name\":\"webbot\"\n       }\n    ],\n    \"vgroupid\":\"1234567895ffa065b574cc1cd71c981d42f99a5ca7a9544389f40c3fe8a43d44\"\n }",
+    "body":"{\n    \"location\":{\n       \"latitude\":51.3797168,\n       \"longitude\":-0.0074526\n    },\n    \"message_id\":\"29475840a4ff11ecb2f2a3b418d3d4e0\",\n    \"msg_ts\":\"1647417635.780691\",\n    \"msgtype\":8000,\n    \"respond_api\":\"http:///0/Apps//Messages\",\n    \"sender\":\"nikki.wolf@example.com\",\n    \"time\":\"3/16/22 8:00 AM\",\n    \"ttl\":\"4/15/22 8:17 AM\",\n    \"users\":[\n       {\n          \"name\":\"bob\"\n       },\n       {\n          \"name\":\"john\"\n       },\n       {\n          \"name\":\"nikki.wolf@example.com\"\n       },\n       {\n          \"name\":\"webbot\"\n       }\n    ],\n    \"vgroupid\":\"1234567895ffa065b5740c3fe8a43d44\"\n }",
     "isBase64Encoded":false
  }

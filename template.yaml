@@ -74,6 +74,11 @@ Resources:
       Timeout: 10
       Architectures:
         - x86_64
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          !Split [',', !Join [',', !Ref SubnetIds]]        
       Layers:
         - !Ref APILayer
       Policies:
@@ -102,10 +107,15 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.9
       FunctionUrlConfig:
-        AuthType: NONE      
+        AuthType: NONE
       Timeout: 10
       Architectures:
         - x86_64
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          !Split [',', !Join [',', !Ref SubnetIds]]        
       Layers:
         - !Ref APILayer
       Policies:
@@ -171,7 +181,7 @@ Resources:
         SecurityGroupIds:
           - !Ref LambdaSecurityGroup
         SubnetIds:
-          !Ref SubnetIds
+          !Split [',', !Join [',', !Ref SubnetIds]]
       Architectures:
         - x86_64
       Layers:
@@ -202,6 +212,11 @@ Resources:
       Timeout: 7
       Architectures:
         - x86_64
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          !Split [',', !Join [',', !Ref SubnetIds]]        
       Layers:
         - !Ref APILayer
       Policies:
@@ -298,12 +313,74 @@ Resources:
               FunctionName: !Ref WickrRoomBlaster
               Payload: '{}'
 
+######################################### VPC Endpoints ###############################
+  VPCecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VPCId
+      GroupDescription: Used for VPC endpoints
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0  
+  
+  SSMEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !Ref VPCecurityGroup
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssm"
+      SubnetIds:
+          !Split [',', !Join [',', !Ref SubnetIds]]       
+      VpcEndpointType: 'Interface'
+      VpcId: 
+        Ref: VPCId
+  
+  SSMMessagesEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !Ref VPCecurityGroup
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ssmmessages"
+      SubnetIds:
+          !Split [',', !Join [',', !Ref SubnetIds]]       
+      VpcEndpointType: 'Interface'
+      VpcId: 
+        Ref: VPCId
+
+  EC2MessagesEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !Ref VPCecurityGroup
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.ec2messages"
+      SubnetIds:
+          !Split [',', !Join [',', !Ref SubnetIds]]       
+      VpcEndpointType: 'Interface'
+      VpcId: 
+        Ref: VPCId
+
+  GatewayAPIEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !Ref VPCecurityGroup
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.execute-api"
+      SubnetIds:
+          !Split [',', !Join [',', !Ref SubnetIds]]       
+      VpcEndpointType: 'Interface'
+      VpcId: 
+        Ref: VPCId
 
 Outputs:
-  # WickrMessageAdapter:
-  #   Description: "Function URL for location messagers"
-  #   Value: 
-  #     Fn::GetAtt: WickrMessageAdapter.FunctionUrl
+  FunctionURL:
+    Description: "The HTTP URL endpoint for the message adapter"
+    Value: !GetAtt WickrMessageAdapterUrl.FunctionUrl
 
   AdapaterGatewayApi:
     Description: "Private API Gateway endpoint URL for the message adapter"

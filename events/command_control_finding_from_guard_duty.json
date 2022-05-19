@@ -18,14 +18,14 @@
         "resource": {
             "resourceType": "Instance",
             "instanceDetails": {
-                "instanceId": "i-02163aba50a35e73b",
+                "instanceId": "i-12345aba50a35e73b",
                 "instanceType": "t3a.small",
                 "launchTime": "2021-12-17T11:56:44.000Z",
                 "platform": null,
                 "productCodes": [],
                 "iamInstanceProfile": {
-                    "arn": "arn:aws:iam::123456789112:instance-profile/web_profile",
-                    "id": "AIPAU5GNKJ4W7CHXD2MGG"
+                    "arn": "arn:aws:iam::123456789112:instance-profile/web",
+                    "id": "ABCD5GNKJ4W7CHXD2MGG"
                 },
                 "networkInterfaces": [
                     {
@@ -40,7 +40,7 @@
                             }
                         ],
                         "subnetId": "subnet-0111ce7f224dde94d",
-                        "vpcId": "vpc-0a16fc4c36ec1d760",
+                        "vpcId": "vpc-1234fc4c36ec1d760",
                         "securityGroups": [
                             {
                                 "groupName": "sg_linux_management",
@@ -118,7 +118,7 @@
         "findingTypeVersion": {
             "present": false
         },
-        "title": "Command and Control server domain name queried by EC2 instance i-02163aba50a35e73b.",
-        "description": "EC2 instance i-02163aba50a35e73b is querying a domain name associated with a known Command & Control server."
+        "title": "Command and Control server domain name queried by EC2 instance i-12343aba50a35e73b.",
+        "description": "EC2 instance i-12343aba50a35e73b is querying a domain name associated with a known Command & Control server."
     }
 }

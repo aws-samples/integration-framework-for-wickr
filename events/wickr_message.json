@@ -1,0 +1,10 @@
+{
+    "id":"12345e799802f2",
+    "message":"This is a typical 1:1 message maybe with a passport number: 533380006",
+    "msg_ts":"1510777143.738976",
+    "msgtype":1000,
+    "receiver":"user001",
+    "sender":"user003",
+    "time":"11/15/17 3:19 PM",
+    "vgroupid":"123456789012313c3626018712cf2c374b4a80eba4d28xxxxxx"
+}

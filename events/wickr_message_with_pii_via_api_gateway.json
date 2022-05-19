@@ -1,0 +1,39 @@
+{
+    "version": "2.0",
+    "routeKey": "$default",
+    "rawPath": "/",
+    "rawQueryString": "",
+    "headers": {
+        "content-length": "466",
+        "x-amzn-trace-id": "Root=1-62856eaa-47fcxxxx032679afe0ef",
+        "accept-language": "en-US,*",
+        "x-forwarded-proto": "https",
+        "host": "12345567453cj3246ytdvma0xxxx.lambda-url.us-east-2.on.aws",
+        "x-forwarded-port": "443",
+        "content-type": "application/json; charset=utf-8",
+        "x-custom-user-agent": "WickrIO v1.1",
+        "x-forwarded-for": "3.145.9.68",
+        "accept-encoding": "gzip, deflate",
+        "user-agent": "WickrIO v1.1"
+    },
+    "requestContext": {
+        "accountId": "anonymous",
+        "apiId": "dwmpf2342342cjmbdvma0phuho",
+        "domainName": "12345643216ytdvma0phuho.lambda-url.us-east-2.on.aws",
+        "domainPrefix": "dwmpfont3cjmb66ytdvma0phuho",
+        "http": {
+            "method": "POST",
+            "path": "/",
+            "protocol": "HTTP/1.1",
+            "sourceIp": "9.9.9.68",
+            "userAgent": "WickrIO v1.1"
+        },
+        "requestId": "701b7671-e4d9-4ab8-83bb-69f1e66fa031",
+        "routeKey": "$default",
+        "stage": "$default",
+        "time": "18/May/2022:22:09:46 +0000",
+        "timeEpoch": 1652911786531
+    },
+    "body": "{\"message\":\"Hey everyone here is my passport number: 533380006\",\"message_id\":\"73bc3040d6f411ec8c482b8949d43657\",\"msg_ts\":\"1652910594.372255\",\"msgtype\":1000,\"respond_api\":\"http:///0/Apps//Messages\",\"sender\":\"nikki.wolf@example.com\",\"time\":\"5/18/22 9:49 PM\",\"ttl\":\"3/10/23 11:09 AM\",\"users\":[{\"name\":\"nikki.wolf@example.com\"},{\"name\":\"xxxxe4912abe7f0ea062d04bd-bot\"}],\"vgroupid\":\"S31234f45878f24515a05090491687e9b5f4a1c66\"}",
+    "isBase64Encoded": false
+}
