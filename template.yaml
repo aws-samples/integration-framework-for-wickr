@@ -378,7 +378,7 @@ Resources:
         Ref: VPCId
 
 Outputs:
-  FunctionURL:
+  AdapterFunctionURL:
     Description: "The HTTP URL endpoint for the message adapter"
     Value: !GetAtt WickrMessageAdapterUrl.FunctionUrl
 
