@@ -1,31 +1,36 @@
+# **Incident Response (IR)  - Wickr War Room**
 
-**Incident Response  - Wickr Room Users**
+This example uses AWS Systems Manager Incident Manager to form part of an incident response workflow where the goal is to create a "war room" for secure out of band collaboration.
 
-In order to run the IR example you must set the following:
+The sample is designed to provide a basic workflow which can be extended for your organisations requirements.
+
+### Wickr War Room Incident Resonders
+
+The workflow will create a new Wickr war room designed for the incident responders, configure the users by running the following:
 
 ```bash
 aws ssm put-parameter \
 --name "/AWIF/IR-Wickr-Users" \
---value '[{"name": "user1@somewhere.co.uk"},{"name": "user2@somewhere.com"}]' \
+--value '[{"name": "nikki.wolf@example.com"},{"name": "john.doe@example.com"}]' \
 --type "String" \
 --overwrite
 ```
 
-**Incident Response  - Wickr Room Moderators**
+### Wickr Room Moderators
 
 In order to run the IR example you must set the following Wickr room moderators:
 
 ```bash
 aws ssm put-parameter \
 --name "/AWIF/IR-Wickr-Moderators" \
---value '[{"name": "admin1@somewhere.co.uk"},{"name": "admin2@somewhere.com"}]' \
+--value '[{"name": "admin1@example.com"},{"name": "admin2@example.com"}]' \
 --type "String" \
 --overwrite
 ```
 
-**Incident Response  - Incident Manager Response Plan**
+### AWS Incident Manager Response Plan
 
-In order to run the IR example you must set the response plan arn:
+A prerequisite for using AWS Incident Manager is creating a resonse plan that can include escalation processes:
 
 ```bash
 aws ssm put-parameter \
