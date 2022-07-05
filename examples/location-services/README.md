@@ -18,7 +18,7 @@ When you install the Wickr Integration Framework you specified a location room c
 2. In any room where you have a running Wickr Web Interface bot as a user configured as per the prerequisites above share your device location:
 
 <video width="320" height="240" controls>
-  <source src="assets/location-services.mp4" type="video/mp4">
+  <source src="../assets/location-services.mp4" type="video/mp4">
 </video>
 
 ## Results and Next Steps
