@@ -45,7 +45,57 @@ The framework has been written with developers in mind and it uses the AWS SAM w
 make deploy/guided
 ````
 
+### Guided Parameters
+
+| Name                 | Value                              | Description                                                  |
+| -------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| Stack Name           | AWIF                               | AWS CloudFormation stack name                                |
+| AWS Region           | eu-west-1                          | Valid AWS region to deploy the stack                         |
+| WickrUrl             | http://example.net/WickrIO/V1/Apps | Valid URL where the Wickr API is installed - no Wickr key    |
+| WickrApiKey          | your-api-key                       | Wickr API key                                                |
+| WickrApiToken        | your-wickr-token                   | Base64 encoded Wickr authentication token i.e. MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0 |
+| WickrVerifyCert      | True                               | True if the Wickr API endpoint certificate should be validated, False otherwise |
+| WickrLocatorRoomName | TAK Locator                        | Room name used for the location tracker integration example  |
+| WickrPIIRoomName     | PII Detector                       | Room name used for the PII detector example                  |
+| WickrChatBotRoomName | Chat Bot                           | Room name used for the chat bot example                      |
+| VPCId                | your-vpc-id                        | The AWS Lambda functions are configured to run within a VPC.  Enter your VPC ID where you would like the |
+
+
+
+## Makefile Targets
+
+The following targets are available: 
+
+
+```
+
+debug/incident                 Run the Lambda IR function
+delete                         Delete application
+dependencies                   Add Python dependencies
+deploy/custom                  Deploy the SAM app with custom params
+deploy/guided                  Guided deployment
+deploy                         Deploy the SAM app (once deploy/guided has been runn to generate a samconfig.yaml)
+package                        Create CF output
+```
+
 # Configuration 
+
+## Wickr
+
+In order to use the Wickr API callbacks you will need to register a target URL that the Wickr IO client will use to send incoming messages to.
+
+1. Retrieve the AWS API Gateway endpoint from the AWS CloudFormation stack outputs named `AdapaterGatewayApi`
+
+2. The following pseudocode (taken from [here](https://github.com/WickrInc/wickrio-example-app-python/blob/master/python-web-requester/requester.py)) shows an example of setting the Wickr IO client callback URL 
+
+    ```python
+    payload = {'callbackurl': 'https://abcde123ri.execute-api.eu-west-1.amazonaws.com/Prod/'}
+    setMsgRecvCallback = requests.post(URL + /MsgRecvCallback",headers=PARAMS,params=payload)
+    ```
+
+    
+
+For more information on Wickr URL Callbacks see the documentation here: https://wickrinc.github.io/wickrio-docs/#existing-integrations-web-interface-integration-web-interface-rest-api
 
 ## Parameter Requirements
 
@@ -68,6 +118,7 @@ NOTE:  The default throughput is 40 transactions per second for SSM Parameters. 
 ## Further Reading
 
 - [AWS Serverless Application Model Developers guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html)
+- 
 
 
 ## Security

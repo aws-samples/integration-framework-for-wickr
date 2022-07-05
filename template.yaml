@@ -106,8 +106,6 @@ Resources:
       CodeUri: functions/message_adapter
       Handler: app.lambda_handler
       Runtime: python3.9
-      FunctionUrlConfig:
-        AuthType: NONE
       Timeout: 10
       Architectures:
         - x86_64
@@ -280,6 +278,7 @@ Resources:
                 passthroughBehavior: when_no_match
                 httpMethod: POST
                 type: AWS_PROXY
+
   WickrSSMAproveDoc: 
     Type: AWS::SSM::Document
     Properties:
@@ -378,10 +377,6 @@ Resources:
         Ref: VPCId
 
 Outputs:
-  AdapterFunctionURL:
-    Description: "The HTTP URL endpoint for the message adapter"
-    Value: !GetAtt WickrMessageAdapterUrl.FunctionUrl
-
-  # AdapaterGatewayApi:
-  #   Description: "Private API Gateway endpoint URL for the message adapter"
-  #   Value: !Sub "https://${MessageAdapterPrivateApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  AdapaterGatewayApi:
+    Description: "Private API Gateway endpoint URL for the message adapter"
+    Value: !Sub "https://${MessageAdapterPrivateApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

@@ -90,7 +90,7 @@ class WickrAPILibrary:
                             data=json.dumps(data))
       
       self._LOGGER.info(f'Response code: {response.status_code}')
-      if response.status_code in[400, 401]:
+      if response.status_code in[400, 401, 404]:
         self._LOGGER.error(response.text)
         raise ValueError(response.text)
 
@@ -102,7 +102,9 @@ class WickrAPILibrary:
                             headers=self.wickr_url_params,
                             verify=self.verify_cert,
                             data=json.dumps(data))
-      if response.status_code in[400, 401]:
+      
+      self._LOGGER.info(f'Response code: {response.status_code}')      
+      if response.status_code in[400, 401, 404]:
         self._LOGGER.error(response.text)
         raise ValueError(response.text)
 
@@ -151,6 +153,7 @@ class WickrAPILibrary:
       room_id = ''
       try:
         rooms = self._call_wickr_api_get(self.wickr_url + "/Rooms")
+        self._LOGGER.info(f'get_rooom_by_name: {rooms.content}')
         json_data = json.loads(rooms.text)
 
         for room in json_data['rooms']:
