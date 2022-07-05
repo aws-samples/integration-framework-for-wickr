@@ -17,7 +17,7 @@ When you install the Wickr Integration Framework you specified a location room c
 1. Create a new Wickr room called "TAK Locator"
 2. In any room where you have a running Wickr Web Interface bot as a user configured as per the prerequisites above share your device location:
 
-https://github.com/aws-samples/integration-framework-for-wickr/blob/use-api-gateway/assets/location-services.mp4
+<video src='https://github.com/aws-samples/integration-framework-for-wickr/blob/use-api-gateway/assets/location-services.mp4'> 
 
 ## Results and Next Steps
 
