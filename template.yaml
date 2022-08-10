@@ -201,7 +201,6 @@ Resources:
         SNSChatBot:
           Type: SNS
           Properties:
-            KmsMasterKeyId: 'alias/aws/sns'
             Topic: !Ref WickrChatTopic
   
   PIIDetector:
@@ -239,6 +238,7 @@ Resources:
   WickrChatTopic:
     Type: AWS::SNS::Topic
     Properties:
+      KmsMasterKeyId: 'alias/aws/sns'
       TopicName: 'Wickr-Chat-Bot'
 
   MessageAdapterPrivateApi:
